@@ -1,0 +1,104 @@
+#include <iostream>
+#include <fstream>
+#include "String.h" 
+#include <ctime>
+
+using namespace std;
+typedef String word;
+#pragma warning(disable: 4996)
+
+//template<typename T>
+class Snode {
+public:
+	int element;
+	Snode* next = nullptr;
+
+	Snode() = default;
+
+	Snode(int el) {
+		element = el;
+	}
+};
+
+class List {
+private:
+	Snode* head = nullptr;
+	Snode* last = nullptr;
+	int count = 0;
+public:
+	void AddLast(int element) {
+		Snode* newnode = new Snode(element);
+		if (isEmpty()) {
+			head = newnode;
+		}
+		else
+		{
+			last->next = newnode;
+		}
+		last = newnode;
+		count++;
+	}
+
+	void Addfirst(int element) {
+		Snode* newnode = new Snode(element);
+		if (isEmpty()) {
+			head = newnode;
+		}
+		else
+		{
+			newnode->next = head;
+		}
+		count++;
+		if (count != 1) {
+			head = newnode;
+		}
+	}
+
+	void RemoveLast() {
+		Snode* current = head;
+		while (current->next!=nullptr)
+		{
+			current = current->next;
+		}
+		delete last;
+		last = current;
+		last->next == nullptr;
+		count--;
+	}
+
+	void RemoveFirst() {
+		Snode* temp = head;
+		head = head->next;
+		temp->next = nullptr;
+		delete temp;
+		count--;
+	}
+
+	void print(void (*action)(Snode* snode)) {
+		Snode* temp;
+		temp = head;
+		for (size_t i = 0; i < count; i++)
+		{
+			action(temp);
+			temp = temp->next;
+		}
+	}
+
+	bool isEmpty() {
+		return count == 0 ? true : false;
+	}
+};
+
+
+int main(){
+
+	List l;
+	l.AddLast(3);
+	l.AddLast(2);
+	l.AddLast(6);
+	l.AddLast(10);
+	l.RemoveFirst();
+	l.RemoveLast();
+	l.print([](Snode* snode) {cout << snode->element << endl; });
+	return 0;
+}
