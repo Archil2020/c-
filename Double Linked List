@@ -1,0 +1,153 @@
+#include <iostream>
+#include <fstream>
+#include "String.h" 
+#include <ctime>
+
+using namespace std;
+typedef String word;
+#pragma warning(disable: 4996)
+
+class Dnode {
+public:
+	int element;
+	Dnode* next = nullptr;
+	Dnode* previous = nullptr;
+
+	Dnode() = default;
+	Dnode(int el) {
+		element = el;
+	}
+};
+
+class List {
+	Dnode* First = nullptr;
+	Dnode* Last = nullptr;
+	size_t count = 0;
+public:
+	List() = default;
+	void Addlast(int element) {
+		Dnode* current = new Dnode(element);
+		if (isEmpty())
+		{
+			First = current;
+		}
+		else
+		{
+			Last->next = current;
+			current->previous = Last;
+		}
+		Last = current;
+		count++;
+	}
+
+	void AddFirst(int element) {
+		Dnode* current = new Dnode(element);
+		if (isEmpty()) {
+			First = current;
+			Last = current;
+		}
+		else
+		{
+			current->next = First;
+			First->previous = current;
+		}
+		First = current;
+		count++;
+	}
+
+	void deleteFirst() {
+		Dnode* temp = First;
+		First = First->next;
+		First->previous = nullptr;
+		delete temp;
+		temp = nullptr;
+		count--;
+	}
+
+	void deleteLast() {
+		if (First == Last) {
+			delete First;
+			Last = nullptr;
+			First = nullptr;
+		}
+		else
+		{
+			Dnode* temp = Last;
+			Last = Last->previous;
+			Last->next = nullptr;
+			delete temp;
+			temp = nullptr;
+		}
+		count--;
+	}
+
+	void insert(int element,int position) {
+		if (position<1 || position>count) {
+			throw exception("Position is out of range");
+		}
+		else
+		{
+			Dnode* newEL = new Dnode(element);
+			if (position == 1)
+			{
+				newEL->next = First;
+				First->previous = newEL;
+				First = newEL;
+				First->previous = nullptr;
+			}
+			else if(position==count)
+			{
+				newEL->previous = Last;
+				Last->next = newEL;
+				Last = newEL;
+				Last->next = nullptr;
+			}
+			else
+			{
+				Dnode* temp = First;
+				int i = 0;
+				while (i<position)
+				{
+					temp = temp->next;
+					i++;
+				}
+				Dnode* prev = temp->previous;
+				prev->next = newEL;
+				newEL->previous = prev;
+				newEL->next = temp;
+				temp->previous = newEL;
+				
+			}
+			count++;
+		}
+	}
+
+	bool isEmpty() {
+		return First == nullptr && Last == nullptr && count == 0 ? true : false;
+	}
+	int length() {
+		return count;
+	}
+
+	void print() {
+		Dnode* temp = First;
+		while (temp != nullptr)
+		{
+			cout << temp->element << endl;
+			temp = temp->next;
+		}
+	}
+};
+
+
+int main(){
+
+	List l;
+	l.Addlast(2);
+	l.Addlast(5);
+	l.Addlast(55);
+	l.Addlast(55);
+	l.insert(355, 5);
+	l.print();
+	return 0;
+}
