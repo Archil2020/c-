@@ -1,0 +1,227 @@
+#pragma once
+#include <exception>
+
+template <class T>
+class Vector {
+private:
+	int count;
+	int capacity;
+	T* arr = nullptr;
+public:
+	Vector() = default;
+	Vector(int size) {
+		capacity = size;
+		arr = new T[capacity];
+	}
+	int size() {
+		return count;
+	}
+
+	void add(T element) {
+		if (capacity == 0) {
+			capacity = 2;
+			arr = new T[capacity];
+		}
+		if (IsFull())
+		{
+			capacity *= 2;
+			T* newArr = new T[capacity];
+			for (size_t i = 0; i < count; i++)
+			{
+				newArr[i] = arr[i];
+			}
+			delete[] arr;
+			arr = newArr;
+		}
+		arr[count] = element;
+		count++;
+	}
+
+	void Remove(int index) {
+		if (index < 0 || index >= count)
+		{
+			throw std::exception("Index is out of range");
+		}
+		for (size_t i = index; i < count - 1; i++)
+		{
+			arr[i] = arr[i + 1];
+		}
+		count--;
+	}
+
+	Vector<T>& operator=(Vector<T>& other) {
+		delete[] arr;
+		count = other.count;
+		capacity = other.capacity;
+		arr = new T[capacity];
+		for (size_t i = 0; i < count; i++)
+		{
+			arr[i] = other[i];
+		}
+		return *this;
+	}
+
+	T& operator[](int index) {
+		return arr[index];
+	}
+
+	bool IsEmpty() {
+		return count == 0 ? true : false;
+	} 
+
+	bool IsFull() {
+		return count == capacity ? true : false;
+	}
+
+
+
+	int findIndex(bool(*check)(T* element)) {
+		for (int i = index; i < count; i++)
+		{
+			if (check(arr[i])) {
+				return i;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+	}
+
+	bool Contains(int elemnt, bool(*func)(T* el)) {
+		for (size i = 0; i < count; i++)
+		{
+			if (func(arr[i]))
+			{
+				return true;
+			}
+			else
+			{
+				false;
+			}
+		}
+	}
+
+	int Count(bool(*func)(T element)) {
+		int _count = 0;
+		for (size_t i = 0; i < count; i++)
+		{
+			if (func(arr[i])) {
+				_count++;
+			}
+		}
+		return _count;
+	}
+
+	void sort(int(*comparer)(T,T)) {
+		for (int i = 0; i < count-1; i++)
+		{
+			for (int j = i+1; j < count; j++)
+			{
+				if (comparer(arr[i], arr[j])==1) {
+					T temp = arr[i];
+					arr[i] = arr[j];
+					arr[j] = temp;
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+	}
+
+	void reverse() {
+		int medium;
+		int j = (count - 1);
+		if ((count % 2) == 1) {
+			medium = ((count + 1) / 2);
+			for (int i = 0; i < medium; i++, j--) {
+				T temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+		else if ((count % 2) == 0) {
+			medium = count / 2;
+			for (int i = 0; i < medium; i++, j--) {
+				T temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+	}
+
+	void print() {
+		for (size_t i = 0; i < count; i++)
+		{
+			cout << arr[i] << endl;
+		}
+	}
+
+	double Sum(double(*func)(T element)) {
+		double sum = 0;
+		for (size_t i = 0; i < count; i++)
+		{
+			sum += func(arr[i]);
+		}
+		return sum;
+	}
+
+	template <typename Type>
+	Vector<Type> Select(Type(*func)(T element)) {
+		Vector<Type> resultArr(count);
+		for (size_t i = 0; i < count; i++)
+		{
+			resultArr.add(func(arr[i]));
+		}
+		return resultArr;
+	}
+
+	double Avarage(double(*func)(T element)) {
+		return (Sum(func) / count);
+	}
+
+	template <typename Act>
+	void Action(Act act) {
+		for (size_t i = 0; i < count; i++)
+		{
+			act(arr[i]);
+		}
+	}
+
+	Vector<T>::~Vector()
+	{
+		delete[] arr;
+	}
+};
+
+
+
+
+
+
+#include <iostream>
+#include "vector.h"
+#include <ctime>
+using namespace std;
+#pragma warning(disable:4996)
+
+int main(int argc, char *argv[]) {
+	cout << argv[1] << endl;
+	Vector<int> v;
+	v.add(55);
+	v.add(23);
+	v.add(325);
+	v.add(325);
+	v.add(2);
+	v.add(86);
+	v.print();
+	cout << endl;
+	v.sort([](int a, int b) {return a > b ? 1 : -1; });
+	v.reverse();
+	cout<< v.Count([](int a) {return (a % 2) == 1 ? true : false; }) << endl;
+	v.print();
+	system("pause");
+	return 0;
+}
