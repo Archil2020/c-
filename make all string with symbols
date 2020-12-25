@@ -1,0 +1,51 @@
+
+int main(int argc, char *argv[]) {
+	char lets[3]{ 'i','k','m' };
+	fstream fs("words.txt",ios::out);
+	const int length = 729;
+	char word[8];
+	int count = 0;
+
+	/// ეს ნაწილი ფაილში წერს ყველა შესაძლო ვარიანტს
+	for (size_t a = 0; a < 3; a++)
+	{
+		word[0] = lets[a];
+		for (size_t b = 0; b < 3; b++)
+		{
+			word[1] = lets[b];
+			for (size_t c = 0; c < 3; c++)
+			{
+				word[2] = lets[c];
+				for (size_t d = 0; d < 3; d++)
+				{
+					word[3] = lets[d];
+					for (size_t e = 0; e < 3; e++)
+					{
+						word[4] = lets[e];
+						for (size_t f = 0; f < 3; f++)
+						{
+							word[5] = lets[f];
+							word[6] = '\n';
+							word[7] = '\0';
+							count++;
+							fs << word;
+						}
+					}
+				}
+			}
+		}
+	}
+	fs.close();
+///////////////////////////////////////////// ეს ნაწილი პოულობს ბოლოდან 45-ს
+	char get_words[8];
+	fs.open("words.txt", ios::in);
+	//int el_num = (count-44);
+	for (int i = 0; i <= (729-44); i++)
+	{
+		fs >> get_words;
+	}
+	cout << get_words << endl;
+	fs.close();
+	cin.get();
+	return 0;
+}
